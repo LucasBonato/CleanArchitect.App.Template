@@ -11,8 +11,14 @@ internal sealed class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
     {
         builder.HasKey(todo => todo.Id);
 
-        builder.Property(todo => todo.DueDate).HasConversion(date => date != null ? DateTime.SpecifyKind(date.Value, DateTimeKind.Utc) : date, date => date);
+        builder.Property(todo => todo.DueDate)
+            .HasConversion(date => date != null ? DateTime.SpecifyKind(date.Value, DateTimeKind.Utc) : date, date => date);
 
-        builder.HasOne<User>().WithMany().HasForeignKey(todo => todo.UserId);
+        builder.Property(todo => todo.Description)
+            .HasMaxLength(255);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(todo => todo.UserId);
     }
 }
