@@ -400,4 +400,4 @@ FodyWeavers.xsd
 .containers/
 .idea
 .idea/
-src/App/.env
+src/Template.App.CleanArchitecture/.env
