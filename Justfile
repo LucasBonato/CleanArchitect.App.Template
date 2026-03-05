@@ -1,4 +1,4 @@
-﻿export PROJECT := "App"
+﻿export PROJECT := "Template.App.CleanArchitecture"
 
 set dotenv-filename := "src/{{PROJECT}}/.env"
 

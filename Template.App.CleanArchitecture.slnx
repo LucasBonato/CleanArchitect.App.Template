@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/config/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Template.App.CleanArchitecture/Template.App.CleanArchitecture.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Template.App.CleanArchitecture.Tests.Architecture/Template.App.CleanArchitecture.Tests.Architecture.csproj" />
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+</Solution>

@@ -95,8 +95,8 @@ Important folders and their responsibilities:
 clean-architecture/
 ├── Justfile                           # Task runner recipes (run, test, format, containers, etc.)
 ├── src/
-│   └── App/                          # Single web application project
-│       ├── App.csproj
+│   └── Template.App.CleanArchitecture/                          # Single web application project
+│       ├── Template.App.CleanArchitecture.csproj
 │       ├── Program.cs                # Composition root: DI, middleware, endpoints
 │       ├── AppEnv.cs                 # Environment/config (e.g. OTEL_SERVICE_NAME)
 │       ├── appsettings.json
@@ -143,12 +143,12 @@ clean-architecture/
 │       └── Presentation/
 │           └── Endpoints/            # IEndpoint, Tags, CustomResults, Health, Users, Todos
 ├── tests/
-│   └── App.Tests.Architecture/       # NetArchTest layer and dependency rules
+│   └── Template.App.CleanArchitecture.Tests.Architecture/       # NetArchTest layer and dependency rules
 ├── docker-compose.yml               # web-api, postgres, aspire dashboard
 ├── docker-compose.override.yml
 ├── Directory.Build.props             # TargetFramework, analysis, SonarAnalyzer
 ├── Directory.Packages.props         # Central package versions
-└── App.slnx                         # SDK-style solution (CI uses this)
+└── AppTemplate.App.CleanArchitecture.slnx                         # SDK-style solution (CI uses this)
 ```
 
 - **Domain:** Core entities (`User`, `TodoItem`), domain events, `Result`/`Error`, and interfaces used by application.
@@ -205,14 +205,14 @@ sequenceDiagram
 
 ### Entities
 
-- **`User`** (`App.Domain.Users`) – Id, Email, FirstName, LastName, PasswordHash. Used for authentication and as owner of todo items.
-- **`TodoItem`** (`App.Domain.Todos`) – Id, UserId, Description, DueDate, Labels, IsCompleted, CreatedAt, CompletedAt, Priority. Owned by a user; supports completion and deletion.
+- **`User`** (`Template.App.CleanArchitecture.Domain.Users`) – Id, Email, FirstName, LastName, PasswordHash. Used for authentication and as owner of todo items.
+- **`TodoItem`** (`Template.App.CleanArchitecture.Domain.Todos`) – Id, UserId, Description, DueDate, Labels, IsCompleted, CreatedAt, CompletedAt, Priority. Owned by a user; supports completion and deletion.
 
 Both inherit **`Entity`**, which holds a list of **domain events** and exposes `Raise(IDomainEvent)` and `ClearDomainEvents()`.
 
 ### Value objects / enums
 
-- **`Priority`** (`App.Domain.Todos`) – Enum: NORMAL, LOW, MEDIUM, HIGH, TOP.
+- **`Priority`** (`Template.App.CleanArchitecture.Domain.Todos`) – Enum: NORMAL, LOW, MEDIUM, HIGH, TOP.
 
 ### Result and errors
 
@@ -286,7 +286,7 @@ Registration is split by layer:
   - **Database:** EF Core `ApplicationDbContext` + `IApplicationDbContext` (Scoped), PostgreSQL with snake_case naming.
   - **Health checks:** Npgsql “ready” check.
   - **Authentication:** JWT Bearer, `IUserContext` → `UserContext`, `IPasswordHasher` → `PasswordHasher`, `ITokenProvider` → `TokenProvider`.
-  - **OpenTelemetry:** `AddOpenTelemetryConfiguration()` registers tracing (AspNetCore, HttpClient, Npgsql), metrics, OTLP exporter, and logging export. Requires `OTEL_SERVICE_NAME` (e.g. in `src/App/.env` or configuration).
+  - **OpenTelemetry:** `AddOpenTelemetryConfiguration()` registers tracing (AspNetCore, HttpClient, Npgsql), metrics, OTLP exporter, and logging export. Requires `OTEL_SERVICE_NAME` (e.g. in `src/Template.App.CleanArchitecture/.env` or configuration).
   - **Authorization:** Permission-based (PermissionProvider, PermissionAuthorizationHandler, PermissionAuthorizationPolicyProvider).
 
 **Order in `Program.cs`:**  
@@ -307,8 +307,8 @@ Registration is split by layer:
 
 ```bash
 # From repository root
-dotnet restore App.slnx
-dotnet build App.slnx
+dotnet restore Template.App.CleanArchitecture.slnx
+dotnet build Template.App.CleanArchitecture.slnx
 ```
 
 Configure **appsettings.Development.json** (or User Secrets) with a valid connection string and JWT settings. Example (local PostgreSQL on default port):
@@ -330,7 +330,7 @@ Configure **appsettings.Development.json** (or User Secrets) with a valid connec
 Then:
 
 ```bash
-dotnet run --project src/App/App.csproj
+dotnet run --project src/Template.App.CleanArchitecture/Template.App.CleanArchitecture.csproj
 # Or, if you have Just installed:
 just run
 ```
@@ -365,7 +365,7 @@ The repository includes a **[Justfile](https://github.com/casey/just)** at the r
 
 | Group | Recipe | Description |
 |-------|--------|-------------|
-| **dev** | `just run` | Run the API (`dotnet run --project src/App`) |
+| **dev** | `just run` | Run the API (`dotnet run --project src/Template.App.CleanArchitecture`) |
 | **dev** | `just watch` | Run with hot reload (`dotnet watch run`) |
 | **dev** | `just restore` | Restore packages |
 | **dev** | `just build` | Build the solution |
@@ -388,7 +388,7 @@ The repository includes a **[Justfile](https://github.com/casey/just)** at the r
 | **util** | `just deps` | List solution packages |
 | **util** | `just outdated` | List outdated packages |
 
-The Justfile sets `PROJECT := "App"` and loads env from `src/App/.env` when present (e.g. for `OTEL_SERVICE_NAME` or other config).
+The Justfile sets `PROJECT := "Template.App.CleanArchitecture"` and loads env from `src/Template.App.CleanArchitecture/.env` when present (e.g. for `OTEL_SERVICE_NAME` or other config).
 
 ---
 
@@ -412,18 +412,18 @@ The Justfile sets `PROJECT := "App"` and loads env from `src/App/.env` when pres
 
 ## 13. Testing
 
-- **Test project:** **`App.Tests.Architecture`** (xUnit, NetArchTest.Rules, Shouldly, Coverlet).
+- **Test project:** **`Template.App.CleanArchitecture.Tests.Architecture`** (xUnit, NetArchTest.Rules, Shouldly, Coverlet).
 - **What is tested:** **Architecture rules** only (no unit/integration tests of handlers or API in this repo). NetArchTest enforces:
-  - **Domain** does not depend on: Application, Infrastructure, Presentation, or external packages (only `System` / `System.*` and `App.Domain`).
+  - **Domain** does not depend on: Application, Infrastructure, Presentation, or external packages (only `System` / `System.*` and `Template.App.CleanArchitecture.Domain`).
   - **Application** does not depend on: Infrastructure, Presentation.
   - **Infrastructure** does not depend on: Presentation.
   - **Presentation** does not depend on: Infrastructure.
 - **How to run:**
 
 ```bash
-dotnet test App.slnx --configuration Release
+dotnet test Template.App.CleanArchitecture.slnx --configuration Release
 # Or only the architecture project:
-dotnet test tests/App.Tests.Architecture/App.Tests.Architecture.csproj
+dotnet test tests/Template.App.CleanArchitecture.Tests.Architecture/Template.App.CleanArchitecture.Tests.Architecture.csproj
 # Or: just test
 ```
 
@@ -431,8 +431,8 @@ dotnet test tests/App.Tests.Architecture/App.Tests.Architecture.csproj
 
 ## 14. Development Workflow
 
-- **Run tests:** `dotnet test App.slnx` or `just test`
-- **Run the app:** `dotnet run --project src/App/App.csproj` or `just run` (with DB and JWT config).
+- **Run tests:** `dotnet test Template.App.CleanArchitecture.slnx` or `just test`
+- **Run the app:** `dotnet run --project src/Template.App.CleanArchitecture/Template.App.CleanArchitecture.csproj` or `just run` (with DB and JWT config).
 - **Adding a new feature (e.g. new use case):**
   1. Domain: add or reuse entities, events, errors in `Domain` (no new dependencies).
   2. Application: add command/query and handler under the feature folder; implement `ICommandHandler<T>` or `IQueryHandler<TQuery, TResponse>`; add validator if needed. Optionally raise domain events in the handler.

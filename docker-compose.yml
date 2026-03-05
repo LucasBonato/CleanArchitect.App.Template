@@ -4,7 +4,7 @@ services:
     container_name: web-api
     build:
       context: .
-      dockerfile: src/App/Dockerfile
+      dockerfile: src/Template.App.CleanArchitecture/Dockerfile
     ports:
       - "5000:8080"
       - "5001:8081"

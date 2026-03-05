@@ -1,8 +1,8 @@
 ﻿{
   "$schema": "http://json.schemastore.org",
   "author": "Lucas Bonato",
-  "classifications": [ "Template", "Web", "API", "CleanArchitecture" ],
-  "identity": "CleanArchitecture.Template.App",
+  "classifications": [ "Web", "Web API", "API", "CleanArchitecture" ],
+  "identity": "Template.App.CleanArchitecture",
   "name": "My Custom Web API Application Template",
   "shortName": "clean-arch",
   "description": "A custom .NET web api application template made using clean architecture.",
@@ -10,6 +10,6 @@
     "type": "project",
     "language": "C#"
   },
-  "sourceName": "App",
+  "sourceName": "Template.App.CleanArchitecture",
   "preferNameDirectory": true
 }

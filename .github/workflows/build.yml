@@ -22,13 +22,13 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore App.slnx
+        run: dotnet restore Template.App.CleanArchitecture.slnx
 
       - name: Build
-        run: dotnet build App.slnx --configuration Release --no-restore
+        run: dotnet build Template.App.CleanArchitecture.slnx --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test App.slnx --configuration Release --no-restore --no-build
+        run: dotnet test Template.App.CleanArchitecture.slnx --configuration Release --no-restore --no-build
 
       - name: Publish
-        run: dotnet publish App.slnx --configuration Release --no-restore --no-build
+        run: dotnet publish Template.App.CleanArchitecture.slnx --configuration Release --no-restore --no-build
