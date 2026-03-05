@@ -6,6 +6,7 @@ using App.Infrastructure.Authentication;
 using App.Infrastructure.Authorization;
 using App.Infrastructure.Database;
 using App.Infrastructure.DomainEvents;
+using App.Infrastructure.Extensions;
 using App.Infrastructure.Time;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +25,7 @@ public static class InfrastructureDependencyInjection
                 .AddDatabase(configuration)
                 .AddHealthChecks(configuration)
                 .AddAuthenticationInternal(configuration)
+                .AddOpenTelemetryConfiguration()
                 .AddAuthorizationInternal();
 
         private IServiceCollection AddServices()
